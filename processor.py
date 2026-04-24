@@ -54,17 +54,22 @@ DEFAULT_FONT_NAME = "Times New Roman"
 
 def normalize_compare_text(text: str) -> str:
     """
-    Chuẩn hóa text để so sánh.
+    Chuẩn hóa text để so sánh (không phân biệt hoa thường, gom khoảng trắng).
     """
     if text is None:
         return ""
-    # Loại bỏ ký tự đặc biệt hay gặp trong Word
-    text = text.replace("\r", "").replace("\n", "").replace("\t", "")
+    # Chuyển về chữ thường
+    text = text.lower()
+    # Loại bỏ ký tự đặc biệt hay gặp trong Word, thay tab bằng space
+    text = text.replace("\r", " ").replace("\n", " ").replace("\t", " ")
     text = text.replace("\u00a0", " ")  # non-breaking space
-    text = text.strip()
     text = text.replace("\u2019", "'")  # smart quote
     text = text.replace("\u2018", "'")  # smart quote open
-    return text
+    
+    # Gom nhiều khoảng trắng thành 1 khoảng trắng duy nhất
+    text = re.sub(r'\s+', ' ', text)
+    
+    return text.strip()
 
 def remove_outline_level(paragraph) -> None:
     """
@@ -199,6 +204,7 @@ def insert_page_break_before_keywords(doc: Document, keywords: Iterable[str]) ->
         
         # CHỈ chèn ngắt trang nếu không phải là đoạn đầu tiên của tài liệu
         if is_match and i > 0:
+            print(f"DEBUG: Inserting page break before keyword match: '{para.text[:50]}...'")
             new_p = para.insert_paragraph_before()
             new_p.add_run().add_break(WD_BREAK.PAGE)
 
@@ -213,11 +219,16 @@ def insert_special_break_before_income_statement(doc: Document, target_texts: It
         if is_in_table(para):
             continue
             
-        if normalize_compare_text(para.text) in target_norms:
+        norm_text = normalize_compare_text(para.text)
+        if norm_text in target_norms:
+            print(f"DEBUG: Found Special Target: '{para.text[:50]}...' at paragraph index {i}")
             target_idx = i - 2
             if target_idx >= 0:
+                print(f"DEBUG: Inserting special break before paragraph at index {target_idx}")
                 # Chèn trước paragraph tại target_idx
                 paragraphs[target_idx].insert_paragraph_before().add_run().add_break(WD_BREAK.PAGE)
+            else:
+                print(f"DEBUG: Target index {target_idx} is out of bounds, skipping break.")
 
 def set_document_font(doc: Document, font_name: str = DEFAULT_FONT_NAME) -> None:
     """

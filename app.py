@@ -12,15 +12,25 @@ st.set_page_config(
     page_title="Word Processor Pro",
     page_icon="📄",
     layout="centered",
+    initial_sidebar_state="collapsed",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': "# Word Processor Pro\nProfessional document optimization."
+    }
 )
 
 # Custom CSS for Premium Look
 st.markdown("""
     <style>
-    /* Main Background */
     .stApp {
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     }
+
+    /* Hide Streamlit branding and GitHub link */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     
     /* Center the main container */
     .main .block-container {
