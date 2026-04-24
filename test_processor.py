@@ -20,6 +20,8 @@ def test_processor():
         doc.add_paragraph("")
         doc.add_paragraph("Another normal text")
         doc.add_paragraph("Unconsolidated Income Statement")
+        doc.add_paragraph("More text")
+        doc.add_paragraph("Consolidated Income Statement")
         
         mem = io.BytesIO()
         doc.save(mem)

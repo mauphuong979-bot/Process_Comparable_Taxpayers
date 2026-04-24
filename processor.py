@@ -45,7 +45,7 @@ PAGE_BREAK_KEYWORDS = [
     "APPENDIX B",
 ]
 
-SPECIAL_TARGET_TEXT = "Unconsolidated Income Statement"
+SPECIAL_TARGET_TEXTS = ["Unconsolidated Income Statement", "Consolidated Income Statement"]
 DEFAULT_FONT_NAME = "Times New Roman"
 
 # =========================
@@ -202,18 +202,18 @@ def insert_page_break_before_keywords(doc: Document, keywords: Iterable[str]) ->
             new_p = para.insert_paragraph_before()
             new_p.add_run().add_break(WD_BREAK.PAGE)
 
-def insert_special_break_before_income_statement(doc: Document, target_text: str) -> None:
+def insert_special_break_before_income_statement(doc: Document, target_texts: Iterable[str]) -> None:
     """
-    Chèn page break ở trước paragraph nằm trên target 2 đoạn.
+    Chèn page break ở trước paragraph nằm trên target 2 đoạn cho mỗi keyword trong target_texts.
     """
-    target_norm = normalize_compare_text(target_text)
+    target_norms = {normalize_compare_text(t) for t in target_texts}
     paragraphs = list(doc.paragraphs)
     
     for i, para in enumerate(paragraphs):
         if is_in_table(para):
             continue
             
-        if normalize_compare_text(para.text) == target_norm:
+        if normalize_compare_text(para.text) in target_norms:
             target_idx = i - 2
             if target_idx >= 0:
                 # Chèn trước paragraph tại target_idx
@@ -299,7 +299,7 @@ def process_docx(file_stream: io.BytesIO) -> io.BytesIO:
     replace_manual_page_breaks(doc)
     remove_extra_blank_lines_outside_tables(doc)
     insert_page_break_before_keywords(doc, PAGE_BREAK_KEYWORDS)
-    insert_special_break_before_income_statement(doc, SPECIAL_TARGET_TEXT)
+    insert_special_break_before_income_statement(doc, SPECIAL_TARGET_TEXTS)
     set_document_font(doc, DEFAULT_FONT_NAME)
     
     output = io.BytesIO()

@@ -89,67 +89,105 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-def main():
-    # Header Section
-    st.markdown("<h1>Word Processor Pro</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='subtitle'>Tối ưu hóa và chuẩn hóa tài liệu Word chuyên nghiệp</p>", unsafe_allow_html=True)
+def word_processor_tab():
+    # Content of Word Processor Pro
+    st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Word Processor Pro</h2>", unsafe_allow_html=True)
+    st.markdown("<p class='subtitle'>Professional Word document optimization and standardization</p>", unsafe_allow_html=True)
+
+    # Settings
+    auto_process = st.checkbox("Auto-process after upload", value=True, key="auto_process_check")
 
     # File Uploader
     uploaded_file = st.file_uploader(
-        "Kéo và thả file Word (.docx) vào đây",
+        "Drag and drop Word file (.docx) here",
         type=["docx"],
-        help="Chỉ hỗ trợ định dạng .docx"
+        help="Only .docx format is supported",
+        key="word_proc_uploader"
     )
 
     if uploaded_file is not None:
-        file_name = uploaded_file.name
-        st.info(f"Đã chọn: **{file_name}**")
+        file_id = f"{uploaded_file.name}_{uploaded_file.size}"
+        
+        # Info about selected file
+        st.info(f"Selected: **{uploaded_file.name}**")
 
-        if st.button("🚀 Bắt đầu xử lý"):
+        # Start button (Manual trigger)
+        start_manual = st.button("🚀 Start Processing", key="btn_process")
+        
+        # Logic to decide if we should run processing
+        # Run if: manual click OR (auto-process is ON and this file hasn't been processed yet)
+        should_run = start_manual or (auto_process and st.session_state.get('last_processed_id') != file_id)
+
+        if should_run:
+            # Update state to prevent double execution
+            st.session_state['last_processed_id'] = file_id
+            
             progress_bar = st.progress(0)
             status_text = st.empty()
 
             try:
-                # Simulate steps for UX
-                status_text.text("Đang tải tài liệu...")
+                # UX Steps
+                status_text.text("Loading document...")
                 time.sleep(0.5)
                 progress_bar.progress(20)
 
-                status_text.text("Đang chuẩn hóa heading và font...")
-                input_stream = io.BytesIO(uploaded_file.read())
+                status_text.text("Normalizing headings and fonts...")
+                # Important: Read file into memory
+                input_data = uploaded_file.getvalue()
+                input_stream = io.BytesIO(input_data)
                 progress_bar.progress(50)
 
                 # Core processing
                 processed_stream = process_docx(input_stream)
                 
-                status_text.text("Đang hoàn tất lưu file...")
+                status_text.text("Finalizing file...")
                 progress_bar.progress(90)
                 time.sleep(0.3)
                 progress_bar.progress(100)
                 
-                # Success state
-                st.success("✅ Xử lý hoàn tất!")
-                
-                # Preparation of download link
+                # Store results in session state for persistence across reruns
+                st.session_state['processed_data'] = processed_stream.getvalue()
                 time_tag = datetime.now().strftime("%H%M")
-                base_name = file_name.rsplit('.', 1)[0]
-                output_filename = f"{base_name} edited {time_tag}.docx"
-
-                st.download_button(
-                    label="📥 Tải file đã xử lý",
-                    data=processed_stream,
-                    file_name=output_filename,
-                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                )
+                base_name = uploaded_file.name.rsplit('.', 1)[0]
+                st.session_state['output_filename'] = f"{base_name} edited {time_tag}.docx"
+                
+                st.success("✅ Processing complete!")
 
             except Exception as e:
-                st.error(f"❌ Có lỗi xảy ra trong quá trình xử lý: {str(e)}")
+                st.error(f"❌ An error occurred during processing: {str(e)}")
+                # Reset state on error so user can retry
+                st.session_state['last_processed_id'] = None
+
+        # Display download button if we have processed data for the current file
+        if st.session_state.get('last_processed_id') == file_id and 'processed_data' in st.session_state:
+            st.download_button(
+                label="📥 Download Processed File",
+                data=st.session_state['processed_data'],
+                file_name=st.session_state['output_filename'],
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                key="btn_download"
+            )
+
+def main():
+    # Application Title
+    st.markdown("<h1 style='text-align: center; color: #1e3a8a;'>Ultimate Tool Hub</h1>", unsafe_allow_html=True)
+    
+    # Define Tabs
+    tab_titles = ["📄 Word Processor Pro", "🛠️ Other Tools"]
+    tabs = st.tabs(tab_titles)
+
+    with tabs[0]:
+        word_processor_tab()
+
+    with tabs[1]:
+        st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Coming Soon</h2>", unsafe_allow_html=True)
+        st.info("We are developing new tools to make your work more efficient. Stay tuned!")
 
     # Footer
     st.markdown("---")
     st.markdown(
         "<div style='text-align: center; color: #94a3b8; font-size: 0.8rem;'>"
-        "Sử dụng công nghệ python-docx cho hiệu suất tối đa."
+        "Efficiency Optimization System."
         "</div>", 
         unsafe_allow_html=True
     )

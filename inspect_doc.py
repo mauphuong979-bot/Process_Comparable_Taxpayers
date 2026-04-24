@@ -29,7 +29,8 @@ def inspect_docx(file_path):
         "Arm's Length Range",
         "APPENDIX A",
         "APPENDIX B",
-        "Unconsolidated Income Statement"
+        "Unconsolidated Income Statement",
+        "Consolidated Income Statement"
     ]
     
     word_found = {k: False for k in keywords}
