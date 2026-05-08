@@ -17,14 +17,14 @@ from processor import process_docx
 # =========================
 
 st.set_page_config(
-    page_title="Word Processor Pro",
+    page_title="Comparable Taxpayers Processor",
     page_icon="📄",
     layout="centered",
     initial_sidebar_state="collapsed",
     menu_items={
         'Get Help': None,
         'Report a bug': None,
-        'About': "# Word Processor Pro\nProfessional document optimization."
+        'About': "# Comparable Taxpayers Processor\nProfessional document optimization."
     }
 )
 
@@ -108,8 +108,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 def word_processor_tab():
-    # Content of Word Processor Pro
-    st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Word Processor Pro</h2>", unsafe_allow_html=True)
+    # Content of Comparable Taxpayers Processor
+    st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Comparable Taxpayers Processor</h2>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle'>Professional Word document optimization and standardization</p>", unsafe_allow_html=True)
 
     # Settings
@@ -439,8 +439,8 @@ def excel_to_word_landscape(uploaded_file):
     output.seek(0)
     return output
 
-def render_matrix_processor_pro_tab():
-    st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Matrix Processor Pro</h2>", unsafe_allow_html=True)
+def render_matrix_processor_tab():
+    st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Matrix Processor</h2>", unsafe_allow_html=True)
     st.markdown("<p class='subtitle'>Convert Excel matrices to professional landscape Word documents</p>", unsafe_allow_html=True)
 
     # Settings
@@ -508,14 +508,14 @@ def main():
     st.markdown("<h1 style='text-align: center; color: #1e3a8a;'>Ultimate Tool Hub</h1>", unsafe_allow_html=True)
     
     # Define Tabs
-    tab_titles = ["📄 Word Processor Pro", "📊 Matrix Processor Pro", "🛠️ Other Tools"]
+    tab_titles = ["📄 Comparable Taxpayers Processor", "📊 Matrix Processor", "🛠️ Other Tools"]
     tabs = st.tabs(tab_titles)
 
     with tabs[0]:
         word_processor_tab()
 
     with tabs[1]:
-        render_matrix_processor_pro_tab()
+        render_matrix_processor_tab()
 
     with tabs[2]:
         st.markdown("<h2 style='text-align: center; color: #1e3a8a;'>Coming Soon</h2>", unsafe_allow_html=True)
