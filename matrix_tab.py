@@ -64,9 +64,9 @@ def calculate_column_widths(data_matrix, start_row_index, usable_width, header_r
             elif "registration" in header_text:
                 multiplier = 1.1
                 min_val = 11
-            elif "operating income loss" in header_text:
-                multiplier = 1.7
-                min_val = 20
+            elif any(k in header_text for k in ["operating income loss", "accepted companies", "rejected companies"]):
+                multiplier = 1.3
+                min_val = 14
                 
         widths.append(max(min_val, min(max_content_len * multiplier, 50)))
     
@@ -83,11 +83,11 @@ def calculate_column_widths(data_matrix, start_row_index, usable_width, header_r
         if header_row_idx is not None and header_row_idx < len(data_matrix):
             h_text = data_matrix[header_row_idx][i].lower()
             if "country" in h_text:
-                target_min = 0.8
+                target_min = 1
             elif "registration" in h_text:
-                target_min = 1.1
-            elif "operating income loss" in h_text:
-                target_min = 1.5
+                target_min = 1
+            elif any(k in h_text for k in ["operating income loss", "accepted companies", "rejected companies"]):
+                target_min = 0.5
         
         if scaled_widths[i] < target_min:
             scaled_widths[i] = target_min
