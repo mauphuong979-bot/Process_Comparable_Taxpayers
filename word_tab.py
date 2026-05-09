@@ -27,7 +27,12 @@ def word_processor_tab():
         st.info(f"Selected: **{uploaded_file.name}**")
 
         # Start button (Manual trigger)
-        start_manual = st.button("🚀 Start Processing", key="btn_process")
+        start_manual = st.button(
+            "🚀 Convert to Word", 
+            key="btn_process", 
+            disabled=auto_process, 
+            use_container_width=True
+        )
         
         # Logic to decide if we should run processing
         # Run if: manual click OR (auto-process is ON and this file hasn't been processed yet)
