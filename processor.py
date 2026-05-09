@@ -3,8 +3,8 @@ from __future__ import annotations
 import re
 import io
 from datetime import datetime
-from pathlib import Path
-from typing import Iterable, Optional
+
+from typing import Iterable
 
 from docx import Document
 from docx.enum.text import WD_BREAK
